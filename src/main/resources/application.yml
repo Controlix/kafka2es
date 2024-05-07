@@ -2,12 +2,19 @@ spring:
   application.name: kafka2es
 
   kafka:
+    bootstrap-servers: localhost:9092
     consumer:
       auto-offset-reset: earliest
-      bootstrap-servers: localhost:9092
       group-id: data-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 5000
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: be.mbict.kafka2es.Data
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 
   data:
     elasticsearch:

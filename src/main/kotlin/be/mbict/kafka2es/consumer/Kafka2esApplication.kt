@@ -1,4 +1,4 @@
-package be.mbict.kafka2es
+package be.mbict.kafka2es.consumer
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
