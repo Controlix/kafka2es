@@ -8,5 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document
 @Document(indexName = "data")
 data class Data @JsonCreator constructor(
     @JsonProperty("id") @Id val id: Int,
-    @JsonProperty("name") val name: String
+    @JsonProperty("name") val name: String,
+    @JsonProperty("job") val job: String,
+    @JsonProperty("address") val address: String
 )

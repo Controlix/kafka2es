@@ -3,8 +3,6 @@ package be.mbict.kafka2es.producer
 import be.mbict.kafka2es.Data
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.WebApplicationType
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -15,27 +13,32 @@ import java.time.LocalDateTime
 
 @SpringBootApplication
 @EnableElasticsearchRepositories(basePackageClasses = [KafkaDummyDataProducerApplication::class])
-class KafkaDummyDataProducerApplication: CommandLineRunner {
+class KafkaDummyDataProducerApplication : CommandLineRunner {
 
-	@Autowired lateinit var kafkaMessageProducer: KafkaMessageProducer
+    @Autowired
+    lateinit var kafkaMessageProducer: KafkaMessageProducer
 
-	override fun run(vararg args: String?) {
-		println("${LocalDateTime.now()}: Start...")
-		(1..1_000_000).forEach { kafkaMessageProducer.sendRandomData(it) }
-		println("${LocalDateTime.now()}: Done!")
-	}
+    override fun run(vararg args: String?) {
+        println("${LocalDateTime.now()}: Start...")
+        (1..MAX_MSG).forEach(kafkaMessageProducer::sendRandomData)
+        println("${LocalDateTime.now()}: Done!")
+    }
 
+    companion object {
+        val MAX_MSG = 1_000_000
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<KafkaDummyDataProducerApplication>(*args).close()
+    runApplication<KafkaDummyDataProducerApplication>(*args).close()
 }
 
 @Configuration
 internal class KafkaDummyDataProducerConfig {
 
-	@Autowired lateinit var kafkaTemplate: KafkaTemplate<Int, Data>
+    @Autowired
+    lateinit var kafkaTemplate: KafkaTemplate<Int, Data>
 
-	@Bean
-	fun dataProducer() = KafkaMessageProducer(kafkaTemplate)
+    @Bean
+    fun dataProducer() = KafkaMessageProducer(kafkaTemplate)
 }

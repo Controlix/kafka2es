@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 class KafkaMessageListener(private val elasticsearchDataRepository: ElasticsearchDataRepository, private val elasticsearchBulkIndexer: ElesticsearchBulkIndexer) {
 
     // @KafkaListener(id = "data-group", topics = ["data"])
-    fun receiveOneMessageAndSaveIt(data: Data): Unit {
+    fun receiveOneMessageAndSaveIt(data: Data): Unit { // 1
         time()
         elasticsearchDataRepository.save(data)
         processedMessages++
@@ -19,15 +19,15 @@ class KafkaMessageListener(private val elasticsearchDataRepository: Elasticsearc
     }
 
     // @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
-    fun receiveBatchOfMessagesAndSaveThemOneByOne(data: List<Data>): Unit {
+    fun receiveBatchOfMessagesAndSaveThemOneByOne(data: List<Data>): Unit { // 2
         time()
         data.forEach(elasticsearchDataRepository::save)
         processedMessages += data.size
         time()
     }
 
-    @KafkaListener(id = "data-group", topics = ["data"])
-    fun receiveMessagesOneByOneAndBufferThemToSaveThemInBatch(data: Data): Unit {
+    // @KafkaListener(id = "data-group", topics = ["data"])
+    fun receiveMessagesOneByOneAndBufferThemToSaveThemInBatch(data: Data): Unit { // 3
         time()
         dataBuffer.add(data)
         if (dataBuffer.size >= 1000) {
@@ -39,15 +39,15 @@ class KafkaMessageListener(private val elasticsearchDataRepository: Elasticsearc
     }
 
     // @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
-    fun receiveBatchOfMessagesAndSaveThemAll(data: List<Data>): Unit {
+    fun receiveBatchOfMessagesAndSaveThemAll(data: List<Data>): Unit { // 4
         time()
         elasticsearchDataRepository.saveAll(data)
         processedMessages += data.size
         time()
     }
 
-    // @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
-    fun receiveBatchOfMessagesAndSaveThemInBulk(data: List<Data>): Unit {
+    @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
+    fun receiveBatchOfMessagesAndSaveThemInBulk(data: List<Data>): Unit { // 5
         time()
         elasticsearchBulkIndexer.bulkIndex(data)
         processedMessages += data.size
@@ -57,6 +57,7 @@ class KafkaMessageListener(private val elasticsearchDataRepository: Elasticsearc
     companion object {
         var processedMessages: Int = 0
         val dataBuffer: MutableList<Data> = mutableListOf()
+        val MAX_MSG = 1_000_000
 
         private val stopWatch = StopWatch()
 
@@ -66,7 +67,7 @@ class KafkaMessageListener(private val elasticsearchDataRepository: Elasticsearc
                     println("Start processing messages...")
                     stopWatch.start()
                 }
-                100_000 -> {
+                MAX_MSG -> {
                     stopWatch.stop()
                     println("Processed 10^${Math.log10(processedMessages * 1.0).toInt()} messages in ${stopWatch.totalTimeSeconds.seconds.toIsoString()}")
                 }
