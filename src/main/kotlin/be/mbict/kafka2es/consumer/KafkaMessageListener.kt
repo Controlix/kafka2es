@@ -39,7 +39,7 @@ class KafkaMessageListener(private val dataRepository: CrudRepository<Data, Stri
         time()
     }
 
-    @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
+    // @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
     fun receiveBatchOfMessagesAndSaveThemAll(data: List<Data>): Unit { // 4
         time()
         dataRepository.saveAll(data)
@@ -47,7 +47,7 @@ class KafkaMessageListener(private val dataRepository: CrudRepository<Data, Stri
         time()
     }
 
-    // @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
+    @KafkaListener(id = "data-group", topics = ["data"], batch = "true")
     fun receiveBatchOfMessagesAndSaveThemInBulk(data: List<Data>): Unit { // 5
         time()
         bulkRepository.bulkInsert(data)
@@ -58,7 +58,7 @@ class KafkaMessageListener(private val dataRepository: CrudRepository<Data, Stri
     companion object {
         var processedMessages: Int = 0
         val dataBuffer: MutableList<Data> = mutableListOf()
-        val MAX_MSG = 1_000
+        val MAX_MSG = 1_000_000
 
         private val stopWatch = StopWatch()
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 // interface ElasticsearchDataRepository : ElasticsearchRepository<Data, String>
 
-@Component
+// @Component
 class ElasticsearchBulkIndexer(private val elasticsearchClient: ElasticsearchClient) : BulkRepository<Data, String> {
 
     override fun bulkInsert(data: List<Data>) {
