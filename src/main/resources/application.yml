@@ -15,7 +15,17 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-
   data:
     elasticsearch:
       cluster-nodes: localhost:9200
+
+  datasource:
+    url: 'jdbc:mariadb://localhost:3306/my_database'
+    name: my_database
+    username: my_user
+    password: my_password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+#    showSql: true

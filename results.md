@@ -2,6 +2,8 @@
 #### Beginsituatie:
 - Kafka topic bevat 1M messages
 - max-poll-records = 1000
+
+## Elasticsearch
 - Elasticsearch index is leeg
 
 | Methode | Aantal | Run |             Tijd | msg/s |
@@ -45,3 +47,5 @@ Herhaal methode 5 met verschillende batch sizes, steeds 1M messages lezen
 |             3000 |  1M21.863906868S |  12215,395505280 |     118 |
 |             4000 |  1M20.155095877S |  12475,813160208 |     120 |
 |             5000 |  1M19.066862806S |  12647,523431575 |     122 |
+
+## MariaDB

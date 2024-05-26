@@ -1,16 +1,16 @@
-package be.mbict.kafka2es.consumer
+package be.mbict.kafka2es.consumer.persistence.elasticsearch
 
 import be.mbict.kafka2es.Data
+import be.mbict.kafka2es.consumer.persistence.BulkRepository
 import co.elastic.clients.elasticsearch.ElasticsearchClient
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Component
 
-interface ElasticsearchDataRepository : ElasticsearchRepository<Data, String>
+// interface ElasticsearchDataRepository : ElasticsearchRepository<Data, String>
 
 @Component
-class ElesticsearchBulkIndexer(private val elasticsearchClient: ElasticsearchClient) {
+class ElasticsearchBulkIndexer(private val elasticsearchClient: ElasticsearchClient) : BulkRepository<Data, String> {
 
-    fun bulkIndex(data: List<Data>) {
+    override fun bulkInsert(data: List<Data>) {
         val resp = elasticsearchClient.bulk {
             it.index("data")
             it.apply {
